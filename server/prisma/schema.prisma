@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Mode {
+  MOVIE
+  FOOD
+  PERSONALIZED
+}
+
+model RoomMember {
+  id       String @id @default(cuid())
+  username String
+
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id])
+
+  swipes Swipe[]
+}
+
+model Item {
+  id          String @id @default(cuid())
+  title       String
+  description String
+
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id])
+
+  swipes  Swipe[]
+  matches Match[]
+}
+
+model Swipe {
+  id    String  @id @default(cuid())
+  liked Boolean
+
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id])
+
+  memberId String
+  member   RoomMember @relation(fields: [memberId], references: [id])
+
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id])
+
+  @@unique([roomId, memberId, itemId])
+}
+
+model Match {
+  id String @id @default(cuid())
+
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id])
+
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id])
+
+  @@unique([roomId, itemId])
+}
+
+model Room {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  mode      Mode
+  genre     String?
+  createdAt DateTime @default(now())
+
+  members RoomMember[]
+  items   Item[]
+  swipes  Swipe[]
+  matches Match[]
+}

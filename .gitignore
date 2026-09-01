@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+.env.local
+
+# prisma generated client
+generated/
+
+# build output
+dist/ 
+build/ 
+
+# logs
+*.log
+npm-debug.log*
+
+# OS/editor cruft
+.DS_Store
+
+
+.vscode/
