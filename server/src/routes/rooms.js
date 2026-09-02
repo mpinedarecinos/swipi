@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { nanoid } from "nanoid";
+import { customAlphabet } from "nanoid";
 import { prisma } from "../db.js";
 
 const router = Router();
+const nanoid = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ23456789", 6);
 
 router.post("/", async (req, res) => {
   const { displayName } = req.body;
